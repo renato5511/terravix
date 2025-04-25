@@ -32,8 +32,21 @@ map.on(L.Draw.Event.CREATED, function (e) {
     coordenadas: JSON.stringify(geojson.geometry)
   };
 
-  console.log("🔁 Dados capturados:", dados);
-
-  // Aqui vai o envio para planilha via webhook futuramente
-  alert("Piquete salvo localmente. Integração com planilha será feita depois.");
+  fetch("https://script.google.com/macros/s/AKfycbw6o2isluZv9qFh2nzYht8XvjBhQHG4i39fX4FftIswyLwGZKHngf-m4skLoQMOtqgpXQ/exec", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(dados)
+  })
+  .then(res => {
+    if (res.ok) {
+      alert("✅ Piquete salvo na planilha!");
+    } else {
+      alert("❌ Erro ao salvar o piquete.");
+    }
+  })
+  .catch(err => {
+    alert("Erro na conexão com o webhook.");
+  });
 });
